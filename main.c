@@ -21,17 +21,22 @@ int miss = 0;
 int evictions = 0;
 
 void printBinary(unsigned int num, unsigned int n) {
-  int i, mask;
-  for (i = n - 1; i >= 0; i--) {
-    mask = 1 << i;
-    printf("%d", (num & mask) ? 1 : 0);
+  if (num == -1) {
+    printf("   -   ");
+  } else {
+    int i, mask;
+    for (i = n - 1; i >= 0; i--) {
+      mask = 1 << i;
+      printf("%d", (num & mask) ? 1 : 0);
+    }
+    printf("\t\t");
+
   }
-  printf("\t\t");
 }
 
 void display(struct node *cache, unsigned int lines, unsigned int tag_bits) {
   int i;
-  system(CLEAR);
+  //system(CLEAR);
   printf(
       "┌════════════════════════════════════════════════════════════════┐\n");
   printf(
@@ -52,6 +57,18 @@ void directMapping(struct node *cache, unsigned int ref,
   int temp = ref >> offset_bits;
   int index = temp & ((1 << index_bits) - 1);
   int tag = temp >> index_bits;
+
+  printf("Accessing address: %u\n", ref);
+  printf("  Binary breakdown:\n");
+  printf("    Tag     : ");
+  printBinary(tag, tag_bits);
+  printf(" (%d bits)\n", tag_bits);
+  printf("    Index   : ");
+  printBinary(index, index_bits);
+  printf(" (%d bits)\n", index_bits);
+  printf("    Offset  : ");
+  printBinary(offset, offset_bits);
+  printf(" (%d bits)\n", offset_bits);
 
   cache[index].element = ref;
 
@@ -74,6 +91,7 @@ void directMapping(struct node *cache, unsigned int ref,
     }
   }
 }
+
 
 int is_pwr_of_two(unsigned int n) { return (n & (n - 1)) == 0 && n != 0; }
 
